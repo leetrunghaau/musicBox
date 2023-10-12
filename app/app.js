@@ -2,10 +2,9 @@ const express = require('express');
 const http = require('http');
 const WebSocket = require('ws');
 const path = require('path');
-// const userRepository = require('./repositories/userRepository');
-const SoundRepository = require('./repositories/sound-repository')
-const RegisterRepository = require('./repositories/register-repository');
-const { generateId } = require('./helper/generate-key');
+const SoundRepository = require('../repositories/sound-repository')
+const RegisterRepository = require('../repositories/register-repository');
+const { generateId } = require('../helper/generate-key');
 
 const app = express();
 const server = http.createServer(app);
