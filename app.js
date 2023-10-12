@@ -14,6 +14,9 @@ const dayNameOfWeek = ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'];
 
 // Thư mục chứa file HTML và các tài liệu tĩnh
 app.use(express.static(path.join(__dirname, 'public')));
+app.get("/test",(req, res)=>{
+  res.status(200).json({myTest:"ok"})
+})
 
 const driverConnectList = new Set();
 const adminConnectList = new Set();
