@@ -14,10 +14,9 @@ const dayNameOfWeek = ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'];
 
 // Thư mục chứa file HTML và các tài liệu tĩnh
 app.use(express.static(path.join(__dirname, 'public')));
-app.get("/test",(req, res)=>{
-  res.status(200).json({myTest:"ok"})
-})
-
+// app.get("/", (req, res) => {
+//   res.send("Express on Vercel");
+// });
 const driverConnectList = new Set();
 const adminConnectList = new Set();
 const getDataForDriver = async () => {
@@ -28,7 +27,7 @@ const getDataForDriver = async () => {
   }
   for (const item of data.listClock) {
     if (item.Sound && item.Sound.name) {
-      item.Sound.name = item.Sound.name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d") 
+      item.Sound.name = item.Sound.name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d")
     }
     item.week = JSON.parse(item.week);
   }
@@ -44,7 +43,7 @@ const sendDataToDriver = (webSK, data) => {
 // Xử lý kết nối WebSocket
 wss.on('connection', async (ws, req) => {
 
- 
+
   const name = 'Thiết bị không xác định';
   let driver;
   if (req.url.split('=')[0].substring(1) === "driver") {
@@ -77,6 +76,7 @@ wss.on('connection', async (ws, req) => {
   ws.on('message', async (message) => {
     try {
       const signal = JSON.parse(`${message}`);
+      console.log(signal);
       if (signal.code == "clock-edit-state") {
         try {
           const dataEdit = {
@@ -289,7 +289,7 @@ wss.on('connection', async (ws, req) => {
   });
 });
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });

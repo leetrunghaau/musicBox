@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="style/style.css">
+
+</head>
+
+<body>
+
+    <nav class="header">
+        <div class="header-item">Danh sách âm thanh</div>
+    </nav>
+    <div class="container">
+       
+    </div>
+    <div class="dark-player  ">
+        <div class="form">
+            <div class="form-item">
+                <input type="text" id="id" class="input" placeholder=" ">
+                <label for="id" class="input-placeholder">Mã âm thanh</label>
+            </div>
+            <div class="form-item">
+                <input type="text" id="name" class="input" placeholder=" ">
+                <label for="name" class="input-placeholder">Tên âm thanh</label>
+            </div>
+            <div class="form-btn">
+                <button id="cancel">Hủy bỏ</button>
+                <button id="ok" class="yes">Lưu lại</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="add-btn">
+        <i class="fa-solid fa-plus fa-2xl"></i>
+    </div>
+
+    <nav class="nav">
+        <div class="nav-item selected" id="nav-sound">
+            <i class="fa-solid fa-music"></i>
+            <span>Âm thanh</span>
+        </div>
+        <div class="nav-item" id="nav-clock">
+            <i class="fa-solid fa-clock"></i>
+            <span>Hẹn giờ</span>
+        </div>
+
+    </nav>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+        integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script type="text/javascript">
+        // const socket = new WebSocket(`ws://localhost:3000?tokent=leetrunghaau`);
+        const socket = new WebSocket(`ws://localhost:5000/admin=sound`);
+        socket.addEventListener('message', (event) => {
+            console.log('Received message from server:', event.data);
+            const dataObject = JSON.parse(`${event.data}`);
+            console.log(dataObject)
+            if (dataObject.type && dataObject.type === 'sound-init') {
+                for (var key in dataObject.data) {
+                    var rowData = dataObject.data[key];
+                    console.log(key)
+                    var htmlString = '';
+                    htmlString += '<div class="song-card" id="' + rowData.id + '">';
+                    htmlString += '<div class="infor">';
+                    htmlString += '<span class="id">' + rowData.id + '</span>';
+                    htmlString += '<span class="name">' + rowData.name + '</span>';
+                    htmlString += '</div>';
+                    htmlString += '<div class="play">';
+                    htmlString += '<i class="fa-regular fa-circle-play fa-2xl"></i>';
+                    htmlString += '</div>';
+                    htmlString += '<div class="delete">';
+                    htmlString += '<i class="fa-solid fa-trash-can fa-2xl"></i>';
+                    htmlString += '</div>';
+                    htmlString += '</div>';
+                    $('.container').append(htmlString);
+                }
+            }else if (dataObject.type && dataObject.type === 'error') {
+                alert(dataObject.message)
+            }else if (dataObject.type && dataObject.type === 'new-sound') {
+                var htmlString = '';
+                    htmlString += '<div class="song-card" id="' + dataObject.data.id + '">';
+                    htmlString += '<div class="infor">';
+                    htmlString += '<span class="id">' + dataObject.data.id + '</span>';
+                    htmlString += '<span class="name">' + dataObject.data.name + '</span>';
+                    htmlString += '</div>';
+                    htmlString += '<div class="play">';
+                    htmlString += '<i class="fa-regular fa-circle-play fa-2xl"></i>';
+                    htmlString += '</div>';
+                    htmlString += '<div class="delete">';
+                    htmlString += '<i class="fa-solid fa-trash-can fa-2xl"></i>';
+                    htmlString += '</div>';
+                    htmlString += '</div>';
+                    $('.container').append(htmlString);
+            }
+
+
+        });
+        jQuery.fn.pop = [].pop;
+        jQuery.fn.shift = [].shift;
+        let state = "add"
+        let oldID = 'null'
+        let newIdElement;
+        let newNameElement;
+        $('.container').on('click', '.infor', function () {
+            state = "edit"
+            oldID = $(this).find('.id').text()
+            $(".dark-player").addClass('enable');
+            $("#id").val($(this).find('.id').text())
+            $("#name").val($(this).find('.name').text())
+            newIdElement = $(this).find('.id');
+            newNameElement = $(this).find('.name');
+        });
+
+        $("#cancel").click(function () {
+            $(".dark-player").removeClass('enable')
+        })
+        $("#ok").click(function () {
+            $(".dark-player").removeClass('enable')
+            console.log(state)
+            let data = {}
+            if (state == 'add') {
+                const id =
+                    data.code = "sound-add";
+                data.value = {
+                    id: $('#id').val(),
+                    name: $('#name').val()
+                }
+            } else {
+                data.code = "sound-edit"
+                data.value = {
+                    oldId: oldID,
+                    id: $('#id').val(),
+                    name: $('#name').val()
+                }
+                newIdElement.text(data.value.id);
+                newNameElement.text(data.value.name);
+                
+            }
+            socket.send(JSON.stringify(data))
+            console.log(data)
+            
+        })
+        $('.add-btn').click(function () {
+            state = "add"
+            $(".dark-player").addClass('enable');
+            $("#id").val('')
+            $("#name").val('')
+
+        })
+        $('.container').on('click', '.play', function () {
+
+            let data = {}
+            data.code = "sound-play";
+            data.value = {
+                id: $(this).prev().find('.id').text(),
+                name:$(this).prev().find('.name').text()
+            }
+            console.log(data)
+            socket.send(JSON.stringify(data))
+
+
+        })
+        $('.container').on('click', '.delete', function () {
+
+            let data = {}
+            data.code = "sound-delete";
+            data.value = {
+                id: $(this).prev().prev().find('.id').text(),
+            }
+            console.log(data)
+            socket.send(JSON.stringify(data))
+            $(this).parent().detach()
+
+        })
+        $('#nav-sound').click(function () {
+            window.location.href = `/sound.html`
+        })
+        $('#nav-clock').click(function () {
+            window.location.href = `/clock.html`
+        })
+
+    </script>
+</body>
+
+</html>

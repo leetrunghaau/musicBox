@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="/dist/mdtimepicker.css">
+    <link rel="stylesheet" type="text/css" href="/dist/mdtimepicker-theme.css">
+    <!-- <link rel="stylesheet" href="css/bootstrap.min.css"> -->
+    <link href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.0.1/styles/default.min.css" rel="stylesheet">
+    <!-- <link rel="stylesheet" href="css/boxed-check.css"> -->
+    <link rel="stylesheet" href="style/style.css">
+    <link rel="stylesheet" href="style/toggle-switch.css">
+
+</head>
+
+<body>
+
+    <nav class="header">
+        <div class="header-item">Cài đặt giờ phát</div>
+    </nav>
+    <div class="container">
+
+    </div>
+
+
+    <div class="add-btn">
+        <i class="fa-solid fa-plus fa-2xl"></i>
+    </div>
+
+    <nav class="nav">
+        <div class="nav-item " id="nav-sound">
+            <i class="fa-solid fa-music"></i>
+            <span>Âm thanh</span>
+        </div>
+        <div class="nav-item selected" id="nav-clock">
+            <i class="fa-solid fa-clock"></i>
+            <span>Hẹn giờ</span>
+        </div>
+
+    </nav>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+        integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script type="text/javascript" src="/dist/mdtimepicker.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.0.1/highlight.min.js"></script>
+    <script type="text/javascript">
+        const socket = new WebSocket(`ws://localhost:5000/admin=clock`);
+        // const socket = new WebSocket(`ws://localhost:3000`);
+        let idItem = 'null'
+        const dayNameOfWeek = ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'];
+        let listSound;
+        let listClock;
+        socket.addEventListener('message', (event) => {
+            // console.log('Received message from server:', event.data);
+            const dataObject = JSON.parse(`${event.data}`);
+            console.log(dataObject)
+            if (dataObject.type && dataObject.type === 'clock-init') {
+                listClock = dataObject.data.listClock;
+                listSound = dataObject.data.listSound;
+                for (var key in listClock) {
+                    var rowData = listClock[key];
+
+                    var htmlString = ` <div id="${rowData.id}" class="clock-card">
+            <div class="head">
+                <div class="detail">
+                    <input type="text" class="timepicker" id="picker2" data-theme="dark" value="${rowData.time}">
+                    <select> \n`
+                    htmlString += generateSoundHtml(listSound, rowData.sound)
+                    htmlString += `</select>
+                </div>
+                <div class="toggle">
+                    <input class="toggle-input" type="checkbox" id="${rowData.id}-switch" `;
+                    if (rowData.state) {
+                        htmlString += 'checked';
+                    }
+                    htmlString += ` />
+                    <label class="toggle-lable-IO" for="${rowData.id}-switch"></label>
+                </div>
+            </div>
+
+            <div class="week ">
+                
+                `;
+                    htmlString += generateWeekHtml(JSON.parse(rowData.week), rowData.id);
+                    htmlString += `
+
+            </div>
+            <div class="delete-item">
+                <div class="delete-zone">
+                    <i class="fa-solid fa-trash-can fa-xl"></i>
+                    <span>Xóa</span>
+                </div>
+
+            </div>
+            <div class="exten show">
+                <div class="exten-zone">
+                    <i class="fa-solid fa-angles-right fa-xl fa-rotate-90"></i>
+                </div>
+            </div>
+        </div>`;
+
+                    $('.container').append(htmlString);
+                    $('.week').hide();
+                    $('.delete-item').hide();
+                }
+            } else if (dataObject.type && dataObject.type === 'error') {
+                alert(dataObject.message)
+            } else if (dataObject.type && dataObject.type === 'new-clock') {
+                var htmlString = ` <div id="${dataObject.data.id}" class="clock-card">
+            <div class="head">
+                <div class="detail">
+                    <input type="text" class="timepicker" id="picker2" data-theme="dark" value="${dataObject.data.time}">
+                    <select> \n`
+                htmlString += generateSoundHtml(listSound, dataObject.data.sound)
+                htmlString += `</select>
+                </div>
+                <div class="toggle">
+                    <input class="toggle-input" type="checkbox" id="${dataObject.data.id}-switch" `;
+                if (dataObject.data.state) {
+                    htmlString += 'checked';
+                }
+                htmlString += ` />
+                    <label class="toggle-lable-IO" for="${dataObject.data.id}-switch"></label>
+                </div>
+            </div>
+
+            <div class="week ">
+                
+                `;
+                htmlString += generateWeekHtml(dataObject.data.week, dataObject.data.id);
+                htmlString += `
+
+            </div>
+            <div class="delete-item">
+                <div class="delete-zone">
+                    <i class="fa-solid fa-trash-can fa-xl"></i>
+                    <span>Xóa</span>
+                </div>
+
+            </div>
+            <div class="exten show">
+                <div class="exten-zone">
+                    <i class="fa-solid fa-angles-right fa-xl fa-rotate-270"></i>
+                </div>
+            </div>
+        </div>`;
+
+                $('.container').append(htmlString);
+            }else if (dataObject.type && dataObject.type === 'error') {
+                alert(dataObject.message)
+            }
+
+        });
+        const generateSoundHtml = (list, id) => {
+            var result = "";
+            for (var key in list) {
+                var rowData = list[key];
+                result += `<option value="${rowData.id}" `;
+                if (id === rowData.id) {
+                    result += 'selected'
+                }
+                result += ` >${rowData.name}</option>\n`;
+            }
+            return result
+        }
+        const generateWeekHtml = (list, id) => {
+            var result = "";
+            for (var key in list) {
+                var rowData = list[key];
+                result += ` <div class="week-item">
+                    <span class="title">${dayNameOfWeek[key]}</span>
+                    <input class="toggle-input" type="checkbox" id="${id}-${dayNameOfWeek[key]}" `
+                if (!rowData == 0) {
+                    result += 'checked';
+                }
+                result += ` />
+                    <label class="toggle-label" for="${id}-${dayNameOfWeek[key]}"></label>
+                </div>`;
+                // console.log(rowData);
+
+            }
+            // console.log('\n\n')
+            return result
+        }
+
+
+        $('.week').hide();
+        $('.delete-item').hide();
+        $('.container').on('click', '.toggle-lable-IO', function () {
+            let sendData = {
+                code: 'clock-edit-state',
+                value: {
+                    state: !$(this).prev().prop("checked"),
+                    id: $(this).parent().parent().parent().attr("id")
+                }
+            }
+            socket.send(JSON.stringify(sendData))
+        });
+        $('.container').on('click', '.toggle-label', function () {
+
+            let sendData = {
+                code: 'clock-edit-week',
+                value: {
+                    id: $(this).parent().parent().parent().attr("id"),
+                    name: $(this).prev().prev().text(),
+                    state: !$(this).prev().prop("checked"),
+
+                }
+            }
+            socket.send(JSON.stringify(sendData));
+        });
+        $('.container').on('click', '.timepicker', function () {
+
+            idItem = $(this).parent().parent().parent().attr("id");
+            mdtimepicker('.timepicker', {
+                readOnly: false, is24hour: true,
+                events: {
+                    timeChanged: function (data) {
+                        console.log('timeChanged', data);
+                        console.log(idItem)
+                        let sendData = {
+                            code: 'clock-edit-time',
+                            value: {
+                                time: data.value,
+                                id: idItem
+                            }
+                        }
+                        socket.send(JSON.stringify(sendData))
+                    }
+                }
+            })
+        })
+        $('.container').on('click', '.exten-zone', function () {
+
+            if (!$(this).parent().prev().is(":hidden")) {
+                $(this).parent().prev().hide();
+                $(this).parent().prev().prev().hide();
+                $(this).children().removeClass('fa-rotate-270')
+                $(this).children().addClass('fa-rotate-90')
+            } else {
+
+                $(this).parent().prev().show();
+                $(this).parent().prev().prev().show();
+                $(this).children().removeClass('fa-rotate-90')
+                $(this).children().addClass('fa-rotate-270')
+            }
+        })
+        $('.container').on('change', 'select', function () {
+            var selectedValue = $(this).val();
+            let sendData = {
+                code: 'clock-edit-sound',
+                value: {
+                    id: $(this).parent().parent().parent().attr("id"),
+                    soundId: selectedValue,
+
+                }
+            }
+            socket.send(JSON.stringify(sendData));
+        });
+        $('.container').on('click', '.delete-zone', function () {
+
+            let sendData = {
+                code: 'clock-delete',
+                value: {
+                    id: $(this).parent().parent().attr("id"),
+
+                }
+            }
+            socket.send(JSON.stringify(sendData));
+            $(this).parent().parent().remove()
+        })
+        $('.add-btn').click(function () {
+            let sendData = {
+                code: 'clock-add',
+
+            }
+            socket.send(JSON.stringify(sendData));
+            // $(this).parent().parent().remove()
+            // location.reload();
+
+        })
+        $('#nav-sound').click(function () {
+            window.location.href = `/index.html`
+        })
+        $('#nav-clock').click(function () {
+            window.location.href = `/clock.html`
+        })
+
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Timepicker Plugin</title>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" type="text/css" href="../dist/mdtimepicker.css">
+	<link rel="stylesheet" type="text/css" href="../dist/mdtimepicker-theme.css">
+	
+</head>
+<body>
+	<div class="wrapper">
+
+		<h2>Time picker</h2>
+		<input type="text" class="timepicker" id="picker2" data-theme="dark" >
+		
+	</div>
+	<script type="text/javascript" src="../dist/mdtimepicker.js"></script>
+	<script type="text/javascript">
+	mdtimepicker.defaults({ theme: 'green', hourPadding: true, clearBtn: true });
+	function log (message) {
+		document.querySelector('#loggerTxt').value = message
+	}
+
+	window.onload = function () {
+		
+		mdtimepicker('#picker2', { readOnly: false, is24hour: true, //format: 'h:mm tt',
+			events: {
+				ready: function() { console.log('ready', this) },
+				shown: function() { console.log('shown', this) },
+				hidden: function() { console.log('hidden', this) },
+				timeChanged: function (data) {
+					console.log('timeChanged', data)
+					log('timeChanged: ' + data.value)
+				}
+			}
+		})
+	}
+	</script>
+</body>
+</html>

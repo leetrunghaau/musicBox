@@ -1,0 +1,377 @@
+body {
+    background-color: rgb(31, 31, 31);
+    font-family: Arial, Helvetica, sans-serif;
+
+}
+
+.header {
+    background-color: rgb(48, 48, 53);
+    display: flex;
+    justify-content: start;
+    height: 50px;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    align-items: center;
+}
+
+.header .header-item {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: larger;
+    color: rgb(226, 228, 227);
+    margin-left: 30px;
+}
+
+.nav {
+    display: flex;
+    justify-content: space-around;
+    background-color: rgb(45, 46, 50);
+    height: 100px;
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    align-items: center;
+
+}
+
+.nav .nav-item {
+    height: 85%;
+    font-family: Arial, Helvetica, sans-serif;
+    color: rgb(197, 199, 196);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.nav .nav-item i {
+    padding: 8px;
+    width: 100%;
+    text-align: center;
+
+}
+
+.selected i {
+    background-color: rgb(0, 74, 119);
+    border-radius: 15px;
+}
+
+.selected span {
+    font-weight: bold;
+}
+
+.container {
+    margin-top: 70px;
+    margin-bottom: 250px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+
+
+.song-card {
+    background-color: rgb(40, 40, 40);
+    height: 70px;
+    width: 95%;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: center;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: row;
+}
+
+.song-card .id,
+.song-card .name {
+    color: rgb(144, 144, 144);
+    font-family: Arial, Helvetica, sans-serif;
+    margin-left: 25px;
+
+}
+
+.song-card .id {
+    font-size: 25px;
+}
+
+.song-card .name {
+    font-size: 15px;
+}
+
+.song-card .infor {
+    display: flex;
+    flex-direction: column;
+    flex-basis: 70%;
+    justify-content: center;
+    height: 100%;
+
+
+}
+
+.song-card .play {
+    display: flex;
+    flex-basis: 15%;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    color: rgb(144, 144, 144);
+
+}
+
+.song-card .delete {
+    display: flex;
+    flex-basis: 15%;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    color: rgb(144, 144, 144);
+
+
+}
+
+.add-btn {
+    background-color: rgb(168, 200, 251);
+    width: 100px;
+    height: 100px;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    bottom: 120px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.add-btn i {
+    /* width: 40px;
+    height: 40px; */
+    color: rgb(9, 45, 105);
+}
+
+.dark-player {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: rgba(74, 78, 87, 0.859);
+    position: fixed;
+    top: 0;
+    left: 0;
+    /* transform: translate(-50%, -50%); */
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    z-index: 1;
+
+}
+
+.dark-player.enable {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.form {
+    width: 90%;
+    margin-top: 150px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.form .form-item {
+    width: 90%;
+    position: relative;
+    margin: 30px 0px;
+}
+
+.form .form-item input {
+    width: 100%;
+    height: 60px;
+    text-align: center;
+    font-size: 25px;
+    background-color: rgb(40, 40, 40);
+    color: rgb(144, 144, 144);
+    border: none;
+    border-radius: 30px;
+    transition: border-color 0.3s;
+}
+
+.form .form-item .input-placeholder {
+    position: absolute;
+    top: 0%;
+    left: 40px;
+    padding: 3px 15px 3px 15px;
+    border-radius: 25px;
+    color: rgb(144, 144, 144);
+    background-color: rgb(40, 40, 40);
+    border: solid 2px rgb(0, 74, 119);
+    transform: translateY(-50%);
+    pointer-events: none;
+}
+
+.form .form-btn {
+    margin-top: 20px;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.form .form-btn button {
+    height: 60px;
+    padding: 0px 40px;
+    border-radius: 30px;
+    border: none;
+    /* border: solid 5px rgb(0, 74, 119); */
+    background-color: rgb(144, 144, 144);
+    text-align: center;
+    color: rgb(9, 21, 43);
+    font-size: 25px;
+
+}
+
+.form .form-btn .yes {
+    color: rgb(9, 45, 107);
+    background-color: rgb(168, 200, 251);
+}
+
+.clock-card {
+    display: flex;
+    flex-direction: column;
+    width: 90%;
+    background-color: rgb(40, 40, 40);
+    border-radius: 15px;
+    margin: 10px 0px;
+}
+
+.clock-card .week {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+}
+
+.clock-card .detail {
+    display: flex;
+    flex-direction: column;
+    flex-basis: 85%;
+
+}
+
+.clock-card .toggle {
+    flex-basis: 15%;
+}
+
+.clock-card .head {
+    display: flex;
+    margin: 10px 0px;
+    width: 100%;
+}
+
+.clock-card .head .sound {
+
+    margin: 10px 0px 5px 25px;
+}
+
+.clock-card span {
+    color: rgb(144, 144, 144);
+    margin-left: 25px;
+}
+
+.clock-card .time {
+    font-size: 25px;
+}
+
+.clock-card .sound {
+    font-size: 15px;
+}
+
+.clock-card .week-item {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.clock-card .week-item .title {
+    margin-left: 0px;
+    font-size: 13px;
+}
+
+
+.clock-card .delete-item i {
+    color: rgb(144, 144, 144);
+    ;
+}
+
+.clock-card .delete-item span {
+    margin-left: 5px;
+}
+
+.clock-card .delete-item .delete-zone {
+    width: 150px;
+    margin: 5px 0px 5px 15px;
+    padding: 10px;
+}
+
+.clock-card .exten i {
+    color: rgb(144, 144, 144);
+
+}
+
+.clock-card .exten span {
+    margin-left: 5px;
+}
+
+.clock-card .exten .exten-zone {
+    width: 100%;
+    /* margin: 5px 0px 5px 15px; */
+    padding: 20px 0px;
+    display: flex;
+    justify-content: center;
+    background-color: rgb(50, 50, 50);
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+}
+
+.clock-card .detail input {
+    background: none;
+    border: none;
+    font-size: 25px;
+    color: rgb(144, 144, 144);
+    margin-left: 24px;
+    width: 80px;
+    outline: none;
+
+}
+
+.clock-card .detail select {
+    background: none;
+    border: none;
+    appearance: none;
+    outline: none;
+    font-size: 15px;
+    margin: 10px 0px;
+    color: rgb(144, 144, 144);
+    margin-left: 24px;
+
+}
+
+.clock-card .detail option {
+    background-color: rgb(28, 28, 28);
+    color: rgb(144, 144, 144);
+    border-radius: 15px;
+
+}
+
+.container .driver-card {
+    background-color: antiquewhite;
+
+}
